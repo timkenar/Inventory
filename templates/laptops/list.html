@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Laptops</h2>
+    <div id="laptop-list">
+        {% for laptop in laptops %}
+            <div>
+                <h3>{{ laptop.model }} ({{ laptop.serial_number }})</h3>
+                <p>Warranty End Date: {{ laptop.warranty_end_date }}</p>
+                <div hx-get="{% url 'predict-warranty' laptop.id %}" hx-trigger="load">
+                    Loading warranty prediction...
+                </div>
+                <div hx-get="{% url 'suggest-services' laptop.id %}" hx-trigger="load">
+                    Loading service suggestions...
+                </div>
+                <button class="btn" hx-get="{% url 'add-service' laptop.id %}" hx-target="#service-form-{{ laptop.id }}">
+                    Add Service
+                </button>
+                <div id="service-form-{{ laptop.id }}"></div>
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+
+    <h2>Add New Laptop</h2>
+    <form id="add-laptop-form" hx-post="{% url 'add-laptop' %}" hx-target="#laptop-list" hx-swap="beforeend">
+        <div class="form-group">
+            <label for="serial_number">Serial Number</label>
+            <input type="text" id="serial_number" name="serial_number" required>
+        </div>
+        <div class="form-group">
+            <label for="model">Model</label>
+            <input type="text" id="model" name="model" required>
+        </div>
+        <div class="form-group">
+            <label for="warranty_start_date">Warranty Start Date</label>
+            <input type="date" id="warranty_start_date" name="warranty_start_date" required>
+        </div>
+        <div class="form-group">
+            <label for="warranty_end_date">Warranty End Date</label>
+            <input type="date" id="warranty_end_date" name="warranty_end_date" required>
+        </div>
+        <button type="submit" class="btn">Add Laptop</button>
+    </form>
+{% endblock %}
