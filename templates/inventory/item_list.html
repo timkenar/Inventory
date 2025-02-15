@@ -1,0 +1,114 @@
+{% extends "base.html" %} {% block content %}
+<h2 class="text-2xl font-semibold mb-6">Item List</h2>
+<div id="item-list">
+  {% for item in items %}
+  <div class="bg-white p-6 rounded-xl shadow-lg mb-4">
+    <h3 class="text-xl font-bold">
+      {{ item.name }} ({{ item.serial_number }})
+    </h3>
+    <p class="text-lg">Quantity: {{ item.quantity }}</p>
+    <p class="text-lg">Expiration Date: {{ item.expiration_date }}</p>
+  </div>
+  {% endfor %}
+</div>
+<h2 class="text-2xl font-semibold mt-8 mb-4">Add New Item</h2>
+<form
+  id="add-item-form"
+  hx-post="{% url 'add-item' tenant.id %}"
+  hx-target="#item-list"
+  hx-swap="beforeend"
+  class="bg-white p-6 rounded-xl shadow-lg"
+>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="form-group">
+      <label for="name" class="block text-lg font-semibold mb-2">Name</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        class="w-full p-2 border rounded-lg"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="serial_number" class="block text-lg font-semibold mb-2"
+        >Serial Number</label
+      >
+      <input
+        type="text"
+        id="serial_number"
+        name="serial_number"
+        class="w-full p-2 border rounded-lg"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="quantity" class="block text-lg font-semibold mb-2"
+        >Quantity</label
+      >
+      <input
+        type="number"
+        id="quantity"
+        name="quantity"
+        class="w-full p-2 border rounded-lg"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="expiration_date" class="block text-lg font-semibold mb-2"
+        >Expiration Date</label
+      >
+      <input
+        type="date"
+        id="expiration_date"
+        name="expiration_date"
+        class="w-full p-2 border rounded-lg"
+      />
+    </div>
+  </div>
+  <button
+    type="submit"
+    class="mt-4 bg-[{{ tenant.primary_color }}] text-[{{ tenant.secondary_color }}] px-6 py-2 rounded-lg hover:opacity-80 transition-opacity"
+  >
+    Add Item
+  </button>
+</form>
+{% endblock %} {% comment %} {% extends "base.html" %} {% block title %}{{
+tenant.name }} - Item List{% endblock %} {% block header %}{{ tenant.name }} -
+Item List{% endblock %} {% block content %}
+<div id="item-list">
+  {% for item in items %}
+  <div>
+    <h3>{{ item.name }} ({{ item.serial_number }})</h3>
+    <p>Quantity: {{ item.quantity }}</p>
+    <p>Expiration Date: {{ item.expiration_date }}</p>
+  </div>
+  <hr />
+  {% endfor %}
+</div>
+<h2>Add New Item</h2>
+<form
+  id="add-item-form"
+  hx-post="{% url 'add-item' %}"
+  hx-target="#item-list"
+  hx-swap="beforeend"
+>
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" required />
+  </div>
+  <div class="form-group">
+    <label for="serial_number">Serial Number</label>
+    <input type="text" id="serial_number" name="serial_number" required />
+  </div>
+  <div class="form-group">
+    <label for="quantity">Quantity</label>
+    <input type="number" id="quantity" name="quantity" required />
+  </div>
+  <div class="form-group">
+    <label for="expiration_date">Expiration Date</label>
+    <input type="date" id="expiration_date" name="expiration_date" />
+  </div>
+  <button type="submit" class="btn">Add Item</button>
+</form>
+{% endblock %} {% endcomment %}
