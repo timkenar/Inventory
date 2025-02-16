@@ -14,9 +14,135 @@
     <p class="text-2xl">{{ pending_orders }}</p>
   </div>
 </div>
-{% endblock %} {% comment %} {% extends "base.html" %} {% block title %}{{
-tenant.name }} Dashboard{% endblock %} {% block header %}{{ tenant.name }}
-Dashboard{% endblock %} {% block content %}
+{% endblock %} {% comment %} {% extends "base.html" %} {% block content %}
+<div class="flex-1 flex flex-col">
+  <!-- Profile Section -->
+  <div class="bg-white p-6 rounded-xl shadow-lg mb-6">
+    <div class="flex items-center space-x-4">
+      {% if user.profile_image %}
+      <img
+        src="{{ user.profile_image.url }}"
+        alt="Profile"
+        class="h-16 w-16 rounded-full object-cover"
+      />
+      {% else %}
+      <div
+        class="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center"
+      >
+        <span class="text-2xl text-gray-500"
+          >{{ user.first_name|first|upper }}</span
+        >
+      </div>
+      {% endif %}
+      <div>
+        <h2 class="text-xl font-bold">{{ user.get_full_name }}</h2>
+        <p class="text-gray-600">{{ user.email }}</p>
+        <p class="text-sm text-gray-500">
+          Last login: {{ user.last_login|date:"F j, Y, g:i a" }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+    <div class="bg-white p-6 rounded-xl shadow-lg">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-bold">Total Items</h3>
+        <span class="text-2xl font-bold text-blue-600">{{ total_items }}</span>
+      </div>
+      <p class="text-gray-600 mt-2">Active inventory items</p>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-lg">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-bold">Total Sales</h3>
+        <span class="text-2xl font-bold text-green-600"
+          >${{ total_sales|default:"0" }}</span
+        >
+      </div>
+      <p class="text-gray-600 mt-2">Revenue this month</p>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-lg">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-bold">Pending Orders</h3>
+        <span class="text-2xl font-bold text-yellow-600"
+          >{{ pending_orders|default:"0" }}</span
+        >
+      </div>
+      <p class="text-gray-600 mt-2">Awaiting processing</p>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-lg">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-bold">Low Stock</h3>
+        <span class="text-2xl font-bold text-red-600"
+          >{{ low_stock_count }}</span
+        >
+      </div>
+      <p class="text-gray-600 mt-2">Items below threshold</p>
+    </div>
+  </div>
+
+  <!-- Recent Activity and Alerts -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="bg-white p-6 rounded-xl shadow-lg">
+      <h3 class="text-xl font-bold mb-4">Recent Activity</h3>
+      <div class="space-y-4">
+        {% for activity in recent_activities %}
+        <div
+          class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg"
+        >
+          <div
+            class="flex-shrink-0 w-2 h-2 rounded-full {{ activity.type_color }}"
+          ></div>
+          <div class="flex-1">
+            <p class="text-sm font-medium">{{ activity.description }}</p>
+            <p class="text-xs text-gray-500">
+              {{ activity.timestamp|timesince }} ago
+            </p>
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-gray-500">No recent activity</p>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-lg">
+      <h3 class="text-xl font-bold mb-4">System Alerts</h3>
+      <div class="space-y-4">
+        {% for alert in system_alerts %}
+        <div class="p-3 rounded-lg {{ alert.severity_class }}">
+          <div class="flex items-center">
+            <span class="font-medium">{{ alert.title }}</span>
+          </div>
+          <p class="text-sm mt-1">{{ alert.message }}</p>
+        </div>
+        {% empty %}
+        <p class="text-gray-500">No active alerts</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% comment %} {% extends "base.html" %} {% block content %} {%
+endcomment %}
+<h2 class="text-2xl font-semibold mb-6">Dashboard</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+    <h3 class="text-xl font-bold mb-2">Total Items</h3>
+    <p class="text-2xl">{{ total_items }}</p>
+  </div>
+  <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+    <h3 class="text-xl font-bold mb-2">Total Sales</h3>
+    <p class="text-2xl">${{ total_sales }}</p>
+  </div>
+  <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+    <h3 class="text-xl font-bold mb-2">Pending Orders</h3>
+    <p class="text-2xl">{{ pending_orders }}</p>
+  </div>
+</div>
+{% endblock %} {% endcomment %} {% comment %} {% extends "base.html" %} {% block
+title %}{{ tenant.name }} Dashboard{% endblock %} {% block header %}{{
+tenant.name }} Dashboard{% endblock %} {% block content %}
 <div class="metrics">
   <div class="metric">
     <h3>Total Items</h3>
