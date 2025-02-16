@@ -1,8 +1,43 @@
 # core/views.py
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render,redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from core.models import Tenant
 from inventory.models import Item
+from django.contrib import messages
+
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('core:dashboard', tenant_id=1)  # Adjust tenant_id as needed
+        
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            # Get the tenant associated with the user (adjust based on your model structure)
+            tenant_id = getattr(user, 'tenant_id', 1)  # Default to 1 if not set
+            return redirect('core:dashboard', tenant_id=tenant_id)
+        else:
+            messages.error(request, 'Invalid username or password.')
+    
+    return render(request, 'core/login.html')
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been successfully logged out.')
+    return redirect('core:login')
+
+# Update your existing dashboard view to require login
+@login_required(login_url='core:login')
+def dashboard(request, tenant_id):
+    # Your existing dashboard code here
+    pass
+
+
 
 @login_required
 def dashboard(request, tenant_id):
