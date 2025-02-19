@@ -41,9 +41,9 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'core',
-    'inventory',
-    'sales',
-    'records',
+    # 'inventory',
+    # 'sales',
+    # 'records',
 ]
 
 MIDDLEWARE = [

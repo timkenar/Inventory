@@ -11,7 +11,7 @@
   >
     <!-- Sidebar Navigation -->
     <aside
-      class="w-64 bg-[{{ tenant.primary_color }}] text-[{{ tenant.secondary_color }}] p-4"
+      class="w-64 bg-[{{ tenant.primary_color }}] text-[{{ tenant.secondary_color }}] p-4 shadow-lg"
     >
       <div class="flex items-center justify-center mb-6">
         {% if tenant.logo %}
@@ -20,33 +20,34 @@
           alt="{{ tenant.name }} Logo"
           class="h-12"
         />
+        {% else %}
+        <h2 class="text-xl font-bold">{{ tenant.name }}</h2>
         {% endif %}
       </div>
       <nav class="space-y-2">
         <a
-          href="#"
-          class="block p-2 center rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}]"
+          href="{% url 'core:dashboard' tenant_id %}"
+          class="block p-3 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}] transition-colors duration-200 font-medium"
           >Dashboard</a
         >
         <a
           href="#"
-          class="block p-2 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}]"
+          class="block p-3 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}] transition-colors duration-200 font-medium"
           >Inventory</a
         >
-
         <a
           href="#"
-          class="block p-2 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}]"
+          class="block p-3 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}] transition-colors duration-200 font-medium"
           >Sales</a
         >
         <a
-          href="{% url 'inventory:item-list' tenant.id %}"
-          class="block p-2 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}]"
+          href="#"
+          class="block p-3 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}] transition-colors duration-200 font-medium"
           >Purchases</a
         >
         <a
           href="#"
-          class="block p-2 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}]"
+          class="block p-3 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}] transition-colors duration-200 font-medium"
           >Reports</a
         >
       </nav>
@@ -66,7 +67,7 @@
             <span class="text-sm">Welcome {{ request.user.username }}</span>
             <a
               href="{% url 'core:logout' %}"
-              class="px-4 py-2 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}] transition-colors"
+              class="px-4 py-2 rounded-lg bg-[{{ tenant.secondary_color }}] text-[{{ tenant.primary_color }}] hover:bg-opacity-80 transition-colors duration-200 font-medium"
             >
               Logout
             </a>
