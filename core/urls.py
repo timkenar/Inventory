@@ -1,15 +1,15 @@
 from django.urls import path
-from .views import login_view, logout_view
 from . import views
 
 app_name = 'core'
 
 urlpatterns = [
-    path('login/', login_view, name='login'),
-    path('logout/', logout_view, name='logout'),
     path('', views.dashboard, name='dashboard'),
     path('inventory/', views.inventory, name='inventory'),
     path('sales/', views.sales, name='sales'),
-    path('purchases/<int:tenant_id>/', views.purchases, name='purchases'),
+    path('purchases/', views.purchases, name='purchases'),  # Removed tenant_id
     path('reports/', views.reports, name='reports'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('profile/', views.profile, name='profile'),
 ]

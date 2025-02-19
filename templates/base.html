@@ -3,82 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ tenant.name }} Dashboard</title>
+    <title>Inventory Management Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body
-    class="bg-[{{ tenant.secondary_color }}] text-[{{ tenant.primary_color }}] min-h-screen flex"
-  >
+  <body class="bg-gray-100 text-gray-800 min-h-screen flex">
     <!-- Sidebar Navigation -->
-    <aside
-      class="w-64 bg-[{{ tenant.primary_color }}] text-[{{ tenant.secondary_color }}] p-4 shadow-lg"
-    >
+    <aside class="w-64 bg-gray-800 text-white p-4 shadow-lg">
       <div class="flex items-center justify-center mb-6">
-        {% if tenant.logo %}
-        <img
-          src="{{ tenant.logo.url }}"
-          alt="{{ tenant.name }} Logo"
-          class="h-12"
-        />
-        {% else %}
-        <h2 class="text-xl font-bold">{{ tenant.name }}</h2>
-        {% endif %}
+        <h2 class="text-xl font-bold">Inventory App</h2>
       </div>
       <nav class="space-y-2">
-        <a
-          href="{% url 'core:dashboard' tenant_id %}"
-          class="block p-3 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}] transition-colors duration-200 font-medium"
-          >Dashboard</a
-        >
-        <a
-          href="#"
-          class="block p-3 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}] transition-colors duration-200 font-medium"
-          >Inventory</a
-        >
-        <a
-          href="#"
-          class="block p-3 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}] transition-colors duration-200 font-medium"
-          >Sales</a
-        >
-        <a
-          href="#"
-          class="block p-3 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}] transition-colors duration-200 font-medium"
-          >Purchases</a
-        >
-        <a
-          href="#"
-          class="block p-3 rounded-lg hover:bg-[{{ tenant.secondary_color }}] hover:text-[{{ tenant.primary_color }}] transition-colors duration-200 font-medium"
-          >Reports</a
-        >
+        <a href="{% url 'core:dashboard' %}" class="block p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 font-medium">Dashboard</a>
+        <a href="{% url 'core:inventory' %}" class="block p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 font-medium">Inventory</a>
+        <a href="{% url 'core:sales' %}" class="block p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 font-medium">Sales</a>
+        <a href="{% url 'core:purchases' %}" class="block p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 font-medium">Purchases</a>
+        <a href="{% url 'core:reports' %}" class="block p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 font-medium">Reports</a>
       </nav>
     </aside>
 
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col">
-      <header
-        class="bg-[{{ tenant.primary_color }}] text-[{{ tenant.secondary_color }}] p-6 shadow-md"
-      >
+      <header class="bg-gray-800 text-white p-6 shadow-md">
         <div class="container mx-auto flex justify-between items-center">
           <div class="text-center">
-            <h1 class="text-3xl font-bold">{{ tenant.name }}</h1>
-            <p class="text-lg italic">{{ tenant.motto }}</p>
+            <h1 class="text-3xl font-bold">Inventory Management</h1>
+            <p class="text-lg italic">Manage your inventory efficiently</p>
           </div>
           <div class="flex items-center space-x-4">
             <span class="text-sm">Welcome {{ request.user.username }}</span>
-            <a
-              href="{% url 'core:logout' %}"
-              class="px-4 py-2 rounded-lg bg-[{{ tenant.secondary_color }}] text-[{{ tenant.primary_color }}] hover:bg-opacity-80 transition-colors duration-200 font-medium"
-            >
-              Logout
-            </a>
+            <a href="{% url 'core:logout' %}" class="px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600 transition-colors duration-200 font-medium">Logout</a>
           </div>
         </div>
       </header>
       <main class="flex-1 p-8">{% block content %}{% endblock %}</main>
-      <footer
-        class="bg-[{{ tenant.primary_color }}] text-[{{ tenant.secondary_color }}] text-center p-4 shadow-md"
-      >
-        © 2025 Tech Masters - {{ tenant.name }} Dashboard
+      <footer class="bg-gray-800 text-white text-center p-4 shadow-md">
+        © 2025 Inventory Management - All rights reserved
       </footer>
     </div>
   </body>
