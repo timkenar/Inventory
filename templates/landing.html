@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory System by Techmasters - Streamline Your Operations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <meta name="description" content="Manage your inventory, sales, and purchases effortlessly with Inventory System by Techmasters. Perfect for businesses seeking efficiency and accuracy.">
+    <meta name="keywords" content="inventory management, inventory system, sales tracking, purchase management, Techmasters">
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Header with Logo and Navigation -->
+    <header class="bg-gray-900 text-white py-6 px-4 flex items-center justify-between shadow-md">
+        <div class="flex items-center space-x-4">
+            <!-- Placeholder for Company Logo (Techmasters) with Hover Effect -->
+            <div class="relative group">
+                <img src="/home/timothy/Desktop/Timo/inventory_system/media" alt="Techmasters Logo" class="w-24 h-auto transition-transform duration-300 group-hover:scale-105">
+                <span class="absolute bottom-0 left-0 w-full text-center text-sm font-semibold text-white bg-black bg-opacity-50 py-1">Techmasters</span>
+            </div>
+        </div>
+        <nav class="hidden md:flex space-x-6">
+            <a href="{% url 'core:login' %}" class="hover:text-gray-300 transition duration-300">Login</a>
+            <a href="{% url 'core:register' %}" class="hover:text-gray-300 transition duration-300">Sign Up</a>
+        </nav>
+        <button class="md:hidden text-white focus:outline-none" hx-get="/mobile-menu" hx-target="#mobile-menu" hx-swap="innerHTML">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+    </header>
+
+    <!-- Mobile Menu (Hidden by default, shown via HTMX) -->
+    <div id="mobile-menu" class="md:hidden bg-gray-800 text-white p-4 space-y-4 hidden"></div>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20 px-4 text-center">
+        <div class="container mx-auto">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Welcome to Inventory System by Techmasters</h1>
+            <p class="text-lg md:text-xl mb-8">Revolutionize your business with our powerful inventory management solution. Track, manage, and optimize like never before.</p>
+            <div class="space-x-4">
+                <a href="{% url 'core:register' %}" class="bg-white text-blue-600 hover:bg-gray-200 py-3 px-6 rounded-lg font-semibold transition duration-300">Get Started Free</a>
+                <a href="{% url 'core:login' %}" class="bg-gray-200 text-gray-800 hover:bg-gray-300 py-3 px-6 rounded-lg font-semibold transition duration-300">Login</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-semibold text-center mb-12">Why Choose Inventory System?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-6 bg-gray-50 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium mb-4 text-gray-800">Real-Time Inventory Tracking</h3>
+                    <p class="text-gray-600">Monitor stock levels instantly, prevent shortages, and avoid overstocking with our advanced tracking features.</p>
+                </div>
+                <div class="p-6 bg-gray-50 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium mb-4 text-gray-800">Seamless Sales & Purchase Management</h3>
+                    <p class="text-gray-600">Effortlessly handle transactions, track sales, and manage purchases with intuitive tools designed for efficiency.</p>
+                </div>
+                <div class="p-6 bg-gray-50 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium mb-4 text-gray-800">Comprehensive Reporting</h3>
+                    <p class="text-gray-600">Generate detailed, actionable reports to gain insights and make informed business decisions quickly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-semibold mb-8">What Makes Us Stand Out?</h2>
+            <p class="mb-12 text-gray-700 max-w-2xl mx-auto">Inventory System by Techmasters is built to empower businesses of all sizes. Whether you're a small retailer or a large enterprise, our platform offers scalability, reliability, and ease of use. Say goodbye to manual errors and hello to streamlined operations.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="p-6 bg-white rounded-lg shadow-md">
+                    <h3 class="text-xl font-medium mb-4">Scalable for Any Business</h3>
+                    <p class="text-gray-600">Grow your business without worrying about outgrowing your inventory tools. Our system scales with you.</p>
+                </div>
+                <div class="p-6 bg-white rounded-lg shadow-md">
+                    <h3 class="text-xl font-medium mb-4">User-Friendly Interface</h3>
+                    <p class="text-gray-600">No steep learning curve. Our intuitive design ensures you can start managing inventory right away.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 bg-gray-900 text-white text-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-semibold mb-4">Ready to Transform Your Inventory Management?</h2>
+            <p class="mb-8">Join thousands of businesses trusting Techmasters to optimize their operations.</p>
+            <a href="{% url 'core:register' %}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg font-semibold transition duration-300">Start Your Free Trial Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 px-4">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 Techmasters - All rights reserved.</p>
+            <p class="mt-2"><a href="/contact" class="text-gray-400 hover:text-white transition duration-300">Contact Us</a> | <a href="/privacy" class="text-gray-400 hover:text-white transition duration-300">Privacy Policy</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>
