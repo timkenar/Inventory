@@ -5,6 +5,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+
 
 
 
@@ -100,6 +103,14 @@ def profile(request):
         'user': request.user,
     }
     return render(request, 'core/profile.html', context)
+
+
+
+
+
+
+
+
 # # core/views.py
 # from django.shortcuts import render,redirect
 # # , get_object_or_404
