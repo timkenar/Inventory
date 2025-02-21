@@ -5,70 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inventory Management Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- HTMX for dynamic content -->
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
-    <!-- Heroicons CDN for icons -->
     <script src="https://unpkg.com/@heroicons/react@2.0.18/solid.js"></script>
     <script src="https://unpkg.com/@heroicons/react@2.0.18/outline.js"></script>
+    <style>
+      .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 50;
+      }
+      .popup-content {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 100;
+      }
+      .sidebar-collapsed {
+        width: 64px;
+      }
+      .sidebar-expanded {
+        width: 256px;
+      }
+      .sidebar-item:hover .sidebar-text {
+        display: block;
+      }
+    </style>
   </head>
   <body class="bg-gray-100 text-gray-800 min-h-screen flex">
-
-    <!-- Sidebar Navigation (Only for logged-in users) -->
-    {% if request.user.is_authenticated %}
-    <aside class="w-64 bg-gray-800 text-white p-4 shadow-lg">
-      <div class="flex items-center justify-center mb-6">
-        <h2 style="font-family:serif" class="text-xl font-bold">Inventory App</h2>
+    <!-- Sidebar (Visible on every page) -->
+    <aside 
+      id="sidebar" 
+      class="bg-gray-800 text-white p-4 shadow-lg transition-all duration-300 sidebar-expanded"
+      hx-target="this"
+      hx-swap="outerHTML"
+    >
+      <!-- Sidebar Header -->
+      <div class="flex items-center justify-between mb-6">
+        <h2 style="font-family:serif" class="text-xl font-bold sidebar-text">Inventory App</h2>
+        <button 
+          hx-get="{% url 'core:toggle_sidebar' %}" 
+          class="text-white hover:text-gray-300 focus:outline-none"
+        >
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
       </div>
-      <nav class="space-y-2">
-        <a href="{% url 'core:dashboard' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 font-medium">
-          <svg style="font-family:serif"class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/></svg>
-          Dashboard
+
+      <!-- Navigation -->
+      <nav class="space-y-2 flex-1">
+        <a href="{% url 'core:dashboard' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
+          <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/></svg>
+          <span class="sidebar-text">Dashboard</span>
         </a>
-        <a href="{% url 'core:inventory' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 font-medium">
-          <svg style="font-family:serif"class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16v2H4V6zM4 11h16v2H4v-2zM4 16h16v2H4v-2z"/></svg>
-          Inventory
+        <a href="{% url 'core:inventory' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
+          <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16v2H4V6zM4 11h16v2H4v-2zM4 16h16v2H4v-2z"/></svg>
+          <span class="sidebar-text">Inventory</span>
         </a>
-        <a href="{% url 'core:sales' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 font-medium">
+        <a href="{% url 'core:sales' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M13 7h5v2h-5V7zM3 7h5v2H3V7zm0 6h5v2H3v-2zm10 0h5v2h-5v-2z"/></svg>
-          Sales
+          <span class="sidebar-text">Sales</span>
         </a>
-        <a href="{% url 'core:purchases' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 font-medium">
+        <a href="{% url 'core:purchases' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4 4h12v2H4V4zm0 5h12v2H4V9zm0 5h12v2H4v-2z"/></svg>
-          Purchases
+          <span class="sidebar-text">Purchases</span>
         </a>
-        <a href="{% url 'core:reports' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 font-medium">
+        <a href="{% url 'core:reports' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 8.5h2v2H9V8.5zM9 12h2v2H9v-2zm4-3.5h2v2h-2V8.5zm0 3.5h2v2h-2v-2zM5 8.5h2v2H5V8.5zM5 12h2v2H5v-2z"/></svg>
-          Reports
+          <span class="sidebar-text">Reports</span>
         </a>
       </nav>
+
+      <!-- Profile Section (Bottom of Sidebar) -->
+      {% if request.user.is_authenticated %}
+      <div class="mt-auto relative group">
+        <button class="flex items-center w-full p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+          <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+          </svg>
+          <span class="sidebar-text truncate">{{ request.user.username }}</span>
+        </button>
+        <div class="absolute left-0 bottom-full mb-2 w-64 bg-white rounded-lg shadow-lg hidden group-hover:block">
+          <div class="py-2">
+            <span class="block px-4 py-2 text-sm text-gray-700">Email: {{ request.user.email }}</span>
+            <span class="block px-4 py-2 text-sm text-gray-700">Name: {{ request.user.first_name }} {{ request.user.last_name }}</span>
+            <button 
+              hx-get="{% url 'core:profile_edit' %}" 
+              hx-target="#profile-popup" 
+              hx-swap="innerHTML"
+              class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              onclick="document.getElementById('profile-popup-overlay').style.display='block'"
+            >
+              Edit Profile
+            </button>
+            <a href="{% url 'core:logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
     </aside>
-    {% endif %}
 
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col">
-      <!-- Header (Landing for all, with login/logout options) -->
       <header class="bg-gray-800 text-white p-6 shadow-md">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
-          <div class="text-center md:text-left w-full md:w-auto">
+        <div class="container mx-auto flex justify-between items-center">
+          <div class="text-center md:text-left">
             <h1 class="text-3xl font-bold">Welcome to Inventory Management</h1>
             <p class="text-lg italic">Streamline your inventory, sales, and purchases effortlessly.</p>
           </div>
-          <div class="mt-4 md:mt-0 flex items-center space-x-4">
-            {% if not request.user.is_authenticated %}
-              <a href="{% url 'core:login' %}" class="px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors duration-200 font-medium">Login</a>
-              <a href="{% url 'core:register' %}" class="px-6 py-3 rounded-lg bg-green-600 text-white hover:bg-green-500 transition-colors duration-200 font-medium">Sign Up Free</a>
-            {% else %}
-              <span class="text-sm">Welcome {{ request.user.username }}</span>
-              <a href="{% url 'core:logout' %}" class="px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600 transition-colors duration-200 font-medium">Logout</a>
-              <a href="{% url 'core:dashboard' %}" class="px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors duration-200 font-medium">Go to Dashboard</a>
-            {% endif %}
+          {% if not request.user.is_authenticated %}
+          <div class="flex space-x-4">
+            <a href="{% url 'core:login' %}" class="px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors duration-200 font-medium">Login</a>
+            <a href="{% url 'core:register' %}" class="px-6 py-3 rounded-lg bg-green-600 text-white hover:bg-green-500 transition-colors duration-200 font-medium">Sign Up Free</a>
           </div>
+          {% else %}
+          <a href="{% url 'core:dashboard' %}" class="px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors duration-200 font-medium">Go to Dashboard</a>
+          {% endif %}
         </div>
       </header>
 
+      <!-- Profile Edit Popup -->
+      <div id="profile-popup-overlay" class="popup-overlay">
+        <div id="profile-popup" class="popup-content bg-white p-6 rounded-lg shadow-lg w-96">
+          <!-- HTMX will load content here -->
+        </div>
+      </div>
+
       <!-- Main Content -->
       <main class="flex-1 p-8">
-        <!-- Landing Page Content (Same for all users) -->
         <section class="max-w-4xl mx-auto text-center">
           <h2 class="text-2xl font-semibold mb-4">Why Choose Our Inventory App?</h2>
           <p class="mb-6">Our application helps you track inventory, manage sales, and generate reports with ease. Designed for small businesses and large enterprises alike.</p>
@@ -87,9 +157,9 @@
             </div>
           </div>
           {% if request.user.is_authenticated %}
-            <div class="mt-6">
-              <a href="{% url 'core:dashboard' %}" class="px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors duration-200 font-medium">Go to Your Dashboard</a>
-            </div>
+          <div class="mt-6">
+            <a href="{% url 'core:dashboard' %}" class="px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors duration-200 font-medium">Go to Your Dashboard</a>
+          </div>
           {% endif %}
         </section>
       </main>
@@ -98,5 +168,25 @@
         © 2025 Inventory Management - All rights reserved
       </footer>
     </div>
+
+    <script>
+      // Close popup when clicking outside
+      document.addEventListener('click', function(event) {
+        const overlay = document.getElementById('profile-popup-overlay');
+        const popup = document.getElementById('profile-popup');
+        const profileButton = event.target.closest('.group');
+        
+        if (overlay.style.display === 'block' && !popup.contains(event.target) && !profileButton) {
+          overlay.style.display = 'none';
+        }
+      });
+
+      // Handle HTMX after swap for popup
+      document.body.addEventListener('htmx:afterSwap', function(event) {
+        if (event.target.id === 'profile-popup') {
+          document.getElementById('profile-popup-overlay').style.display = 'block';
+        }
+      });
+    </script>
   </body>
 </html>
