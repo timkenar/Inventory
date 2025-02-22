@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto">
+  <h2 class="text-2xl font-semibold mb-4">Laptop Purchases</h2>
+  <form method="POST" class="space-y-4 mb-6">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div id="availability-status" class="text-sm"></div>
+    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Record Purchase</button>
+  </form>
+  <table class="w-full bg-white shadow-md rounded-lg">
+    <thead class="bg-gray-200">
+      <tr>
+        <th class="p-3 text-left">Laptop Model</th>
+        <th class="p-3 text-left">Serial Number</th>
+        <th class="p-3 text-left">Date of Purchase</th>
+        <th class="p-3 text-left">Warranty (Months)</th>
+        <th class="p-3 text-left">Sold To</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for laptop in laptops %}
+      <tr class="border-t">
+        <td class="p-3">{{ laptop.laptop.name }}</td>
+        <td class="p-3">{{ laptop.laptop.serial_number }}</td>
+        <td class="p-3">{{ laptop.date_of_purchase }}</td>
+        <td class="p-3">{{ laptop.warranty_period }}</td>
+        <td class="p-3">{{ laptop.sold_to_name }} ({{ laptop.sold_to_number }})</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="p-3 text-center">No laptop purchases recorded</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<script>
+  document.addEventListener('htmx:afterSwap', function(event) {
+    if (event.target.id === 'availability-status') {
+      const response = JSON.parse(event.detail.xhr.response);
+      if (response.available) {
+        event.target.textContent = 'Laptop is available';
+        event.target.className = 'text-sm text-green-600';
+      } else {
+        event.target.textContent = response.error || 'Laptop is not available';
+        event.target.className = 'text-sm text-red-600';
+      }
+    }
+  });
+</script>
+{% endblock %}

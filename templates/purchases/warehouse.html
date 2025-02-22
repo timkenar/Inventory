@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto">
+  <h2 class="text-2xl font-semibold mb-4">Warehouse Inventory</h2>
+  <form method="POST" class="space-y-4 mb-6">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Add Item</button>
+  </form>
+  <table class="w-full bg-white shadow-md rounded-lg">
+    <thead class="bg-gray-200">
+      <tr>
+        <th class="p-3 text-left">Type</th>
+        <th class="p-3 text-left">Name</th>
+        <th class="p-3 text-left">Serial Number</th>
+        <th class="p-3 text-left">Available</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr class="border-t">
+        <td class="p-3">{{ item.get_item_type_display }}</td>
+        <td class="p-3">{{ item.name }}</td>
+        <td class="p-3">{{ item.serial_number }}</td>
+        <td class="p-3">{{ item.is_available|yesno }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="p-3 text-center">No items in warehouse</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

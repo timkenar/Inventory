@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto">
+  <h2 class="text-2xl font-semibold mb-4">Purchase Sheet</h2>
+  <table class="w-full bg-white shadow-md rounded-lg">
+    <thead class="bg-gray-200">
+      <tr>
+        <th class="p-3 text-left">Laptop Model</th>
+        <th class="p-3 text-left">Serial Number</th>
+        <th class="p-3 text-left">Date of Purchase</th>
+        <th class="p-3 text-left">Warranty (Months)</th>
+        <th class="p-3 text-left">Sold To</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for purchase in purchases %}
+      <tr class="border-t">
+        <td class="p-3">{{ purchase.laptop.name }}</td>
+        <td class="p-3">{{ purchase.laptop.serial_number }}</td>
+        <td class="p-3">{{ purchase.date_of_purchase }}</td>
+        <td class="p-3">{{ purchase.warranty_period }}</td>
+        <td class="p-3">{{ purchase.sold_to_name }} ({{ purchase.sold_to_number }})</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="p-3 text-center">No purchases recorded</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

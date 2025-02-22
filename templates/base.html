@@ -38,14 +38,13 @@
     </style>
   </head>
   <body class="bg-gray-100 text-gray-800 min-h-screen flex">
-    <!-- Sidebar (Visible on every page) -->
+    <!-- Sidebar -->
     <aside 
       id="sidebar" 
       class="bg-gray-800 text-white p-4 shadow-lg transition-all duration-300 sidebar-expanded"
       hx-target="this"
       hx-swap="outerHTML"
     >
-      <!-- Sidebar Header -->
       <div class="flex items-center justify-between mb-6">
         <h2 style="font-family:serif" class="text-xl font-bold sidebar-text">Inventory App</h2>
         <button 
@@ -58,23 +57,22 @@
         </button>
       </div>
 
-      <!-- Navigation -->
       <nav class="space-y-2 flex-1">
         <a href="{% url 'core:dashboard' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/></svg>
           <span class="sidebar-text">Dashboard</span>
         </a>
-        <a href="{% url 'core:inventory' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
+        <a href="{% url 'purchases:warehouse' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16v2H4V6zM4 11h16v2H4v-2zM4 16h16v2H4v-2z"/></svg>
-          <span class="sidebar-text">Inventory</span>
+          <span class="sidebar-text">Warehouse</span>
         </a>
-        <a href="{% url 'core:sales' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
+        <a href="{% url 'purchases:purchase_sheet' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M13 7h5v2h-5V7zM3 7h5v2H3V7zm0 6h5v2H3v-2zm10 0h5v2h-5v-2z"/></svg>
-          <span class="sidebar-text">Sales</span>
+          <span class="sidebar-text">Purchase Sheet</span>
         </a>
-        <a href="{% url 'core:purchases' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
+        <a href="{% url 'purchases:laptops' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4 4h12v2H4V4zm0 5h12v2H4V9zm0 5h12v2H4v-2z"/></svg>
-          <span class="sidebar-text">Purchases</span>
+          <span class="sidebar-text">Laptops</span>
         </a>
         <a href="{% url 'core:reports' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 8.5h2v2H9V8.5zM9 12h2v2H9v-2zm4-3.5h2v2h-2V8.5zm0 3.5h2v2h-2v-2zM5 8.5h2v2H5V8.5zM5 12h2v2H5v-2z"/></svg>
@@ -82,7 +80,6 @@
         </a>
       </nav>
 
-      <!-- Profile Section (Bottom of Sidebar) -->
       {% if request.user.is_authenticated %}
       <div class="mt-auto relative group">
         <button class="flex items-center w-full p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
@@ -137,8 +134,10 @@
         </div>
       </div>
 
-      <!-- Main Content -->
+      <!-- Main Content Block -->
       <main class="flex-1 p-8">
+        {% block content %}
+        <!-- Default dashboard content -->
         <section class="max-w-4xl mx-auto text-center">
           <h2 class="text-2xl font-semibold mb-4">Why Choose Our Inventory App?</h2>
           <p class="mb-6">Our application helps you track inventory, manage sales, and generate reports with ease. Designed for small businesses and large enterprises alike.</p>
@@ -162,6 +161,7 @@
           </div>
           {% endif %}
         </section>
+        {% endblock %}
       </main>
 
       <footer class="bg-gray-800 text-white text-center p-4 shadow-md">
@@ -170,7 +170,6 @@
     </div>
 
     <script>
-      // Close popup when clicking outside
       document.addEventListener('click', function(event) {
         const overlay = document.getElementById('profile-popup-overlay');
         const popup = document.getElementById('profile-popup');
@@ -181,7 +180,6 @@
         }
       });
 
-      // Handle HTMX after swap for popup
       document.body.addEventListener('htmx:afterSwap', function(event) {
         if (event.target.id === 'profile-popup') {
           document.getElementById('profile-popup-overlay').style.display = 'block';
