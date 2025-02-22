@@ -153,3 +153,7 @@ def toggle_sidebar(request):
     }
     return render(request, 'core/sidebar.html', context)
 
+@login_required
+def settings(request):
+    return render(request, 'core/settings.html')
+

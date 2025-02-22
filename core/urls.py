@@ -28,5 +28,6 @@ urlpatterns = [
     path('profile/edit/', views.profile_edit, name='profile_edit'),
     path('profile/update/', views.profile_update, name='profile_update'),
     path('sidebar/toggle/', views.toggle_sidebar, name='toggle_sidebar'),
+    path('settings/', views.settings, name='settings'),
 
 ]

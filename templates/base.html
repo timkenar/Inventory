@@ -32,21 +32,18 @@
       .sidebar-expanded {
         width: 256px;
       }
-      .sidebar-item:hover .sidebar-text {
-        display: block;
-      }
     </style>
   </head>
   <body class="bg-gray-100 text-gray-800 min-h-screen flex">
     <!-- Sidebar -->
     <aside 
       id="sidebar" 
-      class="bg-gray-800 text-white p-4 shadow-lg transition-all duration-300 sidebar-expanded"
+      class="bg-gray-800 text-white p-4 shadow-lg transition-all duration-300 {% if request.session.sidebar_collapsed %}sidebar-collapsed{% else %}sidebar-expanded{% endif %}"
       hx-target="this"
       hx-swap="outerHTML"
     >
       <div class="flex items-center justify-between mb-6">
-        <h2 style="font-family:serif" class="text-xl font-bold sidebar-text">Inventory App</h2>
+        <h2 style="font-family:serif" class="text-xl font-bold {% if request.session.sidebar_collapsed %}hidden{% else %}block{% endif %}">Inventory App</h2>
         <button 
           hx-get="{% url 'core:toggle_sidebar' %}" 
           class="text-white hover:text-gray-300 focus:outline-none"
@@ -60,23 +57,27 @@
       <nav class="space-y-2 flex-1">
         <a href="{% url 'core:dashboard' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/></svg>
-          <span class="sidebar-text">Dashboard</span>
+          <span class="{% if request.session.sidebar_collapsed %}hidden{% else %}block{% endif %}">Dashboard</span>
         </a>
         <a href="{% url 'purchases:warehouse' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16v2H4V6zM4 11h16v2H4v-2zM4 16h16v2H4v-2z"/></svg>
-          <span class="sidebar-text">Warehouse</span>
+          <span class="{% if request.session.sidebar_collapsed %}hidden{% else %}block{% endif %}">Warehouse</span>
         </a>
         <a href="{% url 'purchases:purchase_sheet' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M13 7h5v2h-5V7zM3 7h5v2H3V7zm0 6h5v2H3v-2zm10 0h5v2h-5v-2z"/></svg>
-          <span class="sidebar-text">Purchase Sheet</span>
+          <span class="{% if request.session.sidebar_collapsed %}hidden{% else %}block{% endif %}">Purchase Sheet</span>
         </a>
         <a href="{% url 'purchases:laptops' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4 4h12v2H4V4zm0 5h12v2H4V9zm0 5h12v2H4v-2z"/></svg>
-          <span class="sidebar-text">Laptops</span>
+          <span class="{% if request.session.sidebar_collapsed %}hidden{% else %}block{% endif %}">Laptops</span>
         </a>
         <a href="{% url 'core:reports' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 8.5h2v2H9V8.5zM9 12h2v2H9v-2zm4-3.5h2v2h-2V8.5zm0 3.5h2v2h-2v-2zM5 8.5h2v2H5V8.5zM5 12h2v2H5v-2z"/></svg>
-          <span class="sidebar-text">Reports</span>
+          <span class="{% if request.session.sidebar_collapsed %}hidden{% else %}block{% endif %}">Reports</span>
+        </a>
+        <a href="{% url 'core:settings' %}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium group">
+          <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 4a1 1 0 00-2 0v12a1 1 0 102 0V4zm4 2a1 1 0 00-2 0v10a1 1 0 102 0V6zm4-1a1 1 0 00-2 0v12a1 1 0 102 0V5zm4 2a1 1 0 00-2 0v8a1 1 0 102 0V7z"/></svg>
+          <span class="{% if request.session.sidebar_collapsed %}hidden{% else %}block{% endif %}">Settings</span>
         </a>
       </nav>
 
@@ -86,7 +87,7 @@
           <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
           </svg>
-          <span class="sidebar-text truncate">{{ request.user.username }}</span>
+          <span class="{% if request.session.sidebar_collapsed %}hidden{% else %}block truncate{% endif %}">{{ request.user.username }}</span>
         </button>
         <div class="absolute left-0 bottom-full mb-2 w-64 bg-white rounded-lg shadow-lg hidden group-hover:block">
           <div class="py-2">
@@ -136,32 +137,7 @@
 
       <!-- Main Content Block -->
       <main class="flex-1 p-8">
-        {% block content %}
-        <!-- Default dashboard content -->
-        <section class="max-w-4xl mx-auto text-center">
-          <h2 class="text-2xl font-semibold mb-4">Why Choose Our Inventory App?</h2>
-          <p class="mb-6">Our application helps you track inventory, manage sales, and generate reports with ease. Designed for small businesses and large enterprises alike.</p>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="p-6 bg-white rounded-lg shadow-md">
-              <h3 class="text-xl font-medium mb-2">Real-Time Tracking</h3>
-              <p>Monitor your stock levels in real time to avoid shortages or overstock.</p>
-            </div>
-            <div class="p-6 bg-white rounded-lg shadow-md">
-              <h3 class="text-xl font-medium mb-2">Sales & Purchases</h3>
-              <p>Efficiently handle transactions and keep accurate records.</p>
-            </div>
-            <div class="p-6 bg-white rounded-lg shadow-md">
-              <h3 class="text-xl font-medium mb-2">Detailed Reports</h3>
-              <p>Generate insightful reports to make informed business decisions.</p>
-            </div>
-          </div>
-          {% if request.user.is_authenticated %}
-          <div class="mt-6">
-            <a href="{% url 'core:dashboard' %}" class="px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors duration-200 font-medium">Go to Your Dashboard</a>
-          </div>
-          {% endif %}
-        </section>
-        {% endblock %}
+        {% block content %}{% endblock %}
       </main>
 
       <footer class="bg-gray-800 text-white text-center p-4 shadow-md">
