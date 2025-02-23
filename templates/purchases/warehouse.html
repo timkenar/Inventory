@@ -1,33 +1,160 @@
 {% extends 'base.html' %}
+{% load custom_tags %}  <!-- Moved this to the top -->
+
 {% block content %}
-<div class="max-w-4xl mx-auto">
-  <h2 class="text-2xl font-semibold mb-4">Warehouse Inventory</h2>
-  <form method="POST" class="space-y-4 mb-6">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Add Item</button>
-  </form>
-  <table class="w-full bg-white shadow-md rounded-lg">
-    <thead class="bg-gray-200">
-      <tr>
-        <th class="p-3 text-left">Type</th>
-        <th class="p-3 text-left">Name</th>
-        <th class="p-3 text-left">Serial Number</th>
-        <th class="p-3 text-left">Available</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in items %}
-      <tr class="border-t">
-        <td class="p-3">{{ item.get_item_type_display }}</td>
-        <td class="p-3">{{ item.name }}</td>
-        <td class="p-3">{{ item.serial_number }}</td>
-        <td class="p-3">{{ item.is_available|yesno }}</td>
-      </tr>
-      {% empty %}
-      <tr><td colspan="4" class="p-3 text-center">No items in warehouse</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="max-w-6xl mx-auto p-6 bg-gray-50 min-h-screen">
+  <div class="mb-6">
+    <h2 class="text-3xl font-bold text-gray-800 mb-4">Warehouse Inventory</h2>
+    
+    <!-- Filter and Search Form -->
+    <form method="GET" class="flex flex-wrap gap-4 items-end">
+      <div class="flex-1 min-w-[200px]">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search by name or serial number" 
+               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+      </div>
+      
+      <div class="w-48">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Item Type</label>
+        <select name="type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+          <option value="">All Types</option>
+          {% for type in item_types %}
+            <option value="{{ type.0 }}" {% if request.GET.type == type.0 %}selected{% endif %}>{{ type.1 }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <div class="w-48">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Availability</label>
+        <select name="available" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+          <option value="">All</option>
+          <option value="true" {% if request.GET.available == "true" %}selected{% endif %}>Available</option>
+          <option value="false" {% if request.GET.available == "false" %}selected{% endif %}>Not Available</option>
+        </select>
+      </div>
+      
+      <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+        Search
+      </button>
+    </form>
+  </div>
+
+  <div class="flex justify-end mb-4">
+    <div class="space-x-3">
+      <button id="bulkUploadBtn" class="px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed" disabled>
+        Bulk Upload (Coming Soon)
+      </button>
+      <button id="addItemBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+        Add Item
+      </button>
+    </div>
+  </div>
+
+  <!-- Popup Modal -->
+  <div id="addItemModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center z-50">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+      <h3 class="text-2xl font-semibold text-gray-800 mb-6">Add New Item</h3>
+      <form method="POST" id="addItemForm" class="space-y-6">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="flex justify-end space-x-3">
+          <button type="button" id="cancelBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center">
+            <span id="submitText">Submit</span>
+            <svg id="loadingSpinner" class="animate-spin h-5 w-5 ml-2 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Inventory Table -->
+  <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+    <table class="w-full">
+      <thead class="bg-indigo-100">
+        <tr>
+          <th class="p-4 text-left text-indigo-800 font-semibold">Type</th>
+          <th class="p-4 text-left text-indigo-800 font-semibold">Name</th>
+          <th class="p-4 text-left text-indigo-800 font-semibold">Serial Number</th>
+          <th class="p-4 text-left text-indigo-800 font-semibold">Available</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in page_obj %}
+        <tr class="border-t hover:bg-gray-50 transition-colors">
+          <td class="p-4" alt="Item type: {{ item.get_item_type_display }}">{{ item.get_item_type_display }}</td>
+          <td class="p-4" alt="Item name: {{ item.name }}">{{ item.name }}</td>
+          <td class="p-4" alt="Serial number: {{ item.serial_number }}">{{ item.serial_number }}</td>
+          <td class="p-4">{{ item.is_available|yesno:"Yes,No" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="p-4 text-center text-gray-500">No items found</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="p-4 flex justify-between items-center border-t">
+      <div class="text-gray-600">
+        Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} items
+      </div>
+      <div class="space-x-2">
+        {% if page_obj.has_previous %}
+        <a href="?{% query_string page=page_obj.previous_page_number %}" class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Previous</a>
+        {% endif %}
+        <span class="text-gray-600">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+        <a href="?{% query_string page=page_obj.next_page_number %}" class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Next</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
 </div>
+
+<!-- JavaScript -->
+<script>
+  const addBtn = document.getElementById('addItemBtn');
+  const modal = document.getElementById('addItemModal');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const form = document.getElementById('addItemForm');
+  const submitText = document.getElementById('submitText');
+  const loadingSpinner = document.getElementById('loadingSpinner');
+
+  addBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+  cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    submitText.classList.add('hidden');
+    loadingSpinner.classList.remove('hidden');
+    
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+    })
+    .then(response => {
+      if (response.ok) {
+        modal.classList.add('hidden');
+        location.reload();
+      } else {
+        throw new Error('Submission failed');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Failed to add item. Please try again.');
+    })
+    .finally(() => {
+      submitText.classList.remove('hidden');
+      loadingSpinner.classList.add('hidden');
+    });
+  });
+</script>
 {% endblock %}
