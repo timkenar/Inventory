@@ -1,40 +1,106 @@
-{% extends "base.html" %} 
+{% extends 'base.html' %}
 {% block content %}
-<div class="flex-1 flex flex-col p-6 bg-gray-50 min-h-screen">
+<div class="flex-1 flex flex-col  bg-gray-50 min-h-screen">
 
-  <!-- Header Section -->
-  <h2 style="font-family:serif" class="text-3xl font-bold text-gray-900 mb-8">Dashboard Overview</h2>
-
-  Profile Section
-  <div class="bg-white p-6 rounded-xl shadow-md mb-6 border border-gray-200">
-    <div class="flex items-center space-x-4">
-      {% if user.profile %}
-        {% if user.profile.profile_image %}
-          <img 
-            src="{{ user.profile.profile_image.url }}" 
-            alt="Profile" 
-            class="h-20 w-20 rounded-full object-cover ring-2 ring-blue-500" 
-          />
-        {% else %}
-          <div class="h-20 w-20 rounded-full bg-gray-200 flex items-center justify-center ring-2 ring-gray-300">
-            <span class="text-2xl text-gray-600">{{ user.first_name|first|upper }}</span>
+ <!-- Slide 2 -->
+  <div class="relative w-full mb-8 overflow-hidden rounded-xl shadow-md" style="height: 280px;">
+    <div class="carousel flex transition-transform duration-500 ease-in-out" style="transform: translateX(0);">
+      <!-- Slide 1: Mind-Body Workshops -->
+      <div class="w-full flex-shrink-0">
+        <div class="bg-orange-500 p-6 rounded-xl text-white flex items-center justify-between" style="height: 280px;">
+          <div class="flex items-center space-x-4">
+            <img src="https://gadgetsleo.com/core/webp-express/webp-images/uploads/2023/03/MacBook-Air-M1-Space-Gray.jpg.webp" alt="Mind-Body Workshops" class="rounded-lg object-cover w-full h-200" />
+            <div>
+              <h3 class="text-2xl font-bold">Laptops</h3>
+              <p class="text-lg">Check Your Warehouse on storage</p>
+            </div>
           </div>
-        {% endif %}
-      {% else %}
-        <div class="h-20 w-20 rounded-full bg-gray-200 flex items-center justify-center ring-2 ring-gray-300">
-          <span class="text-2xl text-gray-600">{{ user.first_name|first|upper }}</span>
         </div>
-      {% endif %}
-      <div>
-        <h2 class="text-2xl font-semibold text-gray-800">{{ user.get_full_name }}</h2>
-        <p class="text-gray-600">{{ user.email }}</p>
-        <p class="text-sm text-gray-500">
-          Last login: {{ user.last_login|date:"F j, Y, g:i a" }}
-        </p>
+      </div>
+
+     <!-- Slide 2 -->
+      <div class="w-full flex-shrink-0">
+        <div class="bg-blue-500 p-6 rounded-xl text-white flex items-center justify-between" style="height: 280px;">
+          <div class="flex items-center space-x-4">
+            <img src="https://3.imimg.com/data3/LT/QF/IMFCP-8454188/images-accessory_big-1000x1000.jpg" alt="Live DJ Sessions" class="rounded-lg object-cover w-full h-280" />
+            <div>
+              <h3 class="text-2xl font-bold">Warehouse</h3>
+              <p class="text-lg">Check on the Storage warehouse</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="mt-4">
-      <a href="{% url 'core:profile' %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium underline">Edit Profile</a>
+    <!-- Navigation Buttons -->
+    <button id="prevSlide" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100">
+      <!-- Heroicon: Chevron Left (outline) -->
+      <svg class="h-6 w-6 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    <button id="nextSlide" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100">
+      <!-- Heroicon: Chevron Right (outline) -->
+      <svg class="h-6 w-6 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+    <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+      <span class="w-3 h-3 bg-white rounded-full opacity-50 cursor-pointer"></span>
+      <span class="w-3 h-3 bg-white rounded-full opacity-100 cursor-pointer"></span>
+    </div>
+  </div>
+
+  <!-- Icon Categories (Replacing Profile Section) -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+    <div class="flex flex-col items-center p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200">
+      <!-- Heroicon: Music Note (outline) -->
+      <svg class="h-10 w-10 text-gray-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+      </svg>
+      <p class="text-gray-800 text-sm font-medium">Devices</p>
+    </div>
+    
+    <div class="flex flex-col items-center p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200">
+      <!-- Heroicon: Paint Brush (outline) -->
+      <svg class="h-10 w-10 text-gray-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+      </svg>
+      <p class="text-gray-800 text-sm font-medium">Performing & Visual Arts</p>
+    </div>
+    <div class="flex flex-col items-center p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200">
+      <!-- Heroicon: Sun (outline) -->
+      <svg class="h-10 w-10 text-gray-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+      <p class="text-gray-800 text-sm font-medium">Holidays</p>
+    </div>
+    <div class="flex flex-col items-center p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200">
+      <!-- Heroicon: Heart (outline) -->
+      <svg class="h-10 w-10 text-gray-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+      </svg>
+      <p class="text-gray-800 text-sm font-medium">Favourites</p>
+    </div>
+    <div class="flex flex-col items-center p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200">
+      <!-- Heroicon: Puzzle (outline) -->
+      <svg class="h-10 w-10 text-gray-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1h-1a2 2 0 100-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+      </svg>
+      <p class="text-gray-800 text-sm font-medium">Hobbies</p>
+    </div>
+    <div class="flex flex-col items-center p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200">
+      <!-- Heroicon: Briefcase (outline) -->
+      <svg class="h-10 w-10 text-gray-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+      <p class="text-gray-800 text-sm font-medium">Business</p>
+    </div>
+    <div class="flex flex-col items-center p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200">
+      <!-- Heroicon: Food (outline) -->
+      <svg class="h-10 w-10 text-gray-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <p class="text-gray-800 text-sm font-medium">Food & Drink</p>
     </div>
   </div>
 
@@ -112,4 +178,29 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Sliding Carousel Logic
+  const carousel = document.querySelector('.carousel');
+  const prevSlide = document.getElementById('prevSlide');
+  const nextSlide = document.getElementById('nextSlide');
+  let slideIndex = 0;
+
+  function slide(direction) {
+    const slideWidth = carousel.children[0].offsetWidth;
+    const totalSlides = carousel.children.length;
+
+    slideIndex += direction;
+    if (slideIndex < 0) slideIndex = totalSlides - 1;
+    if (slideIndex >= totalSlides) slideIndex = 0;
+
+    carousel.style.transform = `translateX(-${slideWidth * slideIndex}px)`;
+  }
+
+  prevSlide.addEventListener('click', () => slide(-1));
+  nextSlide.addEventListener('click', () => slide(1));
+
+  // Auto-slide every 5 seconds
+  setInterval(() => slide(1), 5000);
+</script>
 {% endblock %}
